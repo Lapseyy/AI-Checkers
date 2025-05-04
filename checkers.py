@@ -1,4 +1,4 @@
-# This is layout of
+# This is layout of checkers pieces and board
 class Piece:
     def __init__(self, row, col, color, king=False):
         self.row = row
@@ -41,3 +41,7 @@ class Board:
     def print_board(self):
         for row in self.board:
             print([str(p) if p != 0 else "." for p in row])
+
+if __name__ == "__main__":
+    board = Board()
+    board.print_board()
