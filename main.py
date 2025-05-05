@@ -4,21 +4,28 @@ from game import Game
 
 def get_input():
     '''Get input from the player for their move.'''
-    try:
-        from_row = input("Enter piece ROW (or 'q' to quit, 's' to surrender): ")
-        if from_row.lower() == 'q':
+    while True:
+        entry = input("Enter piece ROW (0–7, 'q' to quit, 's' to surrender): ").strip().lower()
+        if entry == 'q':
             return None
-        if from_row.lower() == 's':
+        if entry == 's':
             return 'surrender'
-        from_row = int(from_row)
-        
-        from_col = int(input("Enter piece COL: "))
-        to_row = int(input("Enter DESTINATION ROW: "))
-        to_col = int(input("Enter DESTINATION COL: "))
-        return (from_row, from_col, to_row, to_col)
-    except:
-        print("Invalid input format. Try again.")
-        return get_input()
+        # try to parse from_row
+        try:
+            from_row = int(entry)
+            from_col = int(input("Enter piece COL (0–7): ").strip())
+            to_row   = int(input("Enter DESTINATION ROW (0–7): ").strip())
+            to_col   = int(input("Enter DESTINATION COL (0–7): ").strip())
+        except ValueError:
+            print(" Invalid input. Please enter integers or one of 'q'/'s'.\n")
+            continue
+
+        # now check bounds
+        if not all(0 <= v < 8 for v in (from_row, from_col, to_row, to_col)):
+            print(" Coordinates must all be between 0 and 7.\n")
+            continue
+
+        return from_row, from_col, to_row, to_col
     
 def main():
     '''Main function to run the checkers game.'''
