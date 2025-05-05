@@ -16,13 +16,15 @@ class Game:
         def explore_jumps(piece, row, col, visited):
             for dr, dc in [(-1, -1), (-1, 1), (1, -1), (1, 1)]:
                 mid_row, mid_col = row + dr, col + dc
-                end_row, end_col = row + 2 * dr, col + 2 * dc
+                end_row, end_col = row + 2*dr, col + 2*dc
 
                 if 0 <= mid_row < 8 and 0 <= mid_col < 8 and 0 <= end_row < 8 and 0 <= end_col < 8:
-                    mid_piece = self.board[mid_row][mid_col]
-                    end_square = self.board[end_row][end_col]
+                    mid_piece  = self.board.board[mid_row][mid_col]
+                    end_square = self.board.board[end_row][end_col]
 
-                    if mid_piece and mid_piece.color != piece.color and end_square == 0 and (end_row, end_col) not in visited:
+                    if (mid_piece and mid_piece.color != piece.color
+                            and end_square == 0
+                            and (end_row, end_col) not in visited):
                         moves.setdefault((end_row, end_col), []).append((mid_row, mid_col))
                         explore_jumps(piece, end_row, end_col, visited | {(end_row, end_col)})
 
@@ -33,7 +35,7 @@ class Game:
         if not moves:
             for dr, dc in [(-1, -1), (-1, 1), (1, -1), (1, 1)]:
                 row, col = piece.row + dr, piece.col + dc
-                if 0 <= row < 8 and 0 <= col < 8 and self.board[row][col] == 0:
+                if 0 <= row < 8 and 0 <= col < 8 and self.board.board[row][col] == 0:
                     if piece.king or (piece.color == "r" and dr > 0) or (piece.color == "b" and dr < 0):
                         moves[(row, col)] = []
 
@@ -41,7 +43,7 @@ class Game:
 
     def _get_valid_moves_recursive(self, piece, moves, jumped, start_row, start_col):
         """Recursively find all valid moves including multiple jumps"""
-        directions = [(-1, -1), (-1, 1), (1, -1), (1, 1)]  # diag dirs
+        directions = [(-1, -1), (-1, 1), (1, -1), (1, 1)]
         
         # If this is not the first move and we haven't captured anything yet,
         # we must capture if possible

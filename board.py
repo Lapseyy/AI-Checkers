@@ -68,3 +68,6 @@ class Board:
                     else:
                         black += 1
         return red, black
+
+    def __getitem__(self, index):
+        return self.board[index]  # Allow subscripting to access the internal board

@@ -78,7 +78,7 @@ def test_multiple_jump_paths():
 
     # Complete second jump
     game.move(red_piece, 6, 3)
-    assert game.board.board[5][0] == 0  # second capture
+    assert game.board.board[5][2] == 0   # second capture
     assert game.board.board[6][3] == red_piece
 
 def test_illegal_move_rejected():
