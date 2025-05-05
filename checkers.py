@@ -1,4 +1,5 @@
 # This is layout of checkers pieces and board
+
 class Piece:
     def __init__(self, row, col, color, king=False):
         self.row = row
@@ -10,6 +11,7 @@ class Piece:
         self.king = True
 
     def __repr__(self):
+        '''Return a string representation of the piece for display purposes'''
         return self.color.upper() if self.king else self.color
 
 
@@ -39,6 +41,7 @@ class Board:
                     self.board[row].append(0)
 
     def print_board(self):
+        """Print the board in a readable format"""
         for row in self.board:
             print([str(p) if p != 0 else "." for p in row])
 

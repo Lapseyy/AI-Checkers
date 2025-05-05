@@ -1,4 +1,4 @@
-# board.py
+# This module defines the Board and Piece classes for a checkers game.
 
 class Piece:
     def __init__(self, row, col, color, king=False):
@@ -71,3 +71,4 @@ class Board:
 
     def __getitem__(self, index):
         return self.board[index]  # Allow subscripting to access the internal board
+    
