@@ -3,6 +3,7 @@
 from game import Game
 
 def get_input():
+    '''Get input from the player for their move.'''
     try:
         from_row = input("Enter piece ROW (or 'q' to quit, 's' to surrender): ")
         if from_row.lower() == 'q':
@@ -20,6 +21,7 @@ def get_input():
         return get_input()
     
 def main():
+    '''Main function to run the checkers game.'''
     game = Game()
     show_instructions()
     

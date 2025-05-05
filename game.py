@@ -11,14 +11,21 @@ class Game:
         self.turn = "b" if self.turn == "r" else "r"
 
     def get_valid_moves(self, piece):
+        # Ensures moves are only generated for the current player's pieces
+        if piece.color != self.turn:
+            return {}
+        
         moves = {}
 
         def explore_jumps(piece, row, col, visited):
-            for dr, dc in [(-1, -1), (-1, 1), (1, -1), (1, 1)]:
+            '''Recursively explore all jump moves for a piece'''
+            for dr, dc in [(-1,-1),(-1,1),(1,-1),(1,1)]:
                 mid_row, mid_col = row + dr, col + dc
                 end_row, end_col = row + 2*dr, col + 2*dc
 
-                if 0 <= mid_row < 8 and 0 <= mid_col < 8 and 0 <= end_row < 8 and 0 <= end_col < 8:
+                if 0 <= mid_row < 8 and 0 <= mid_col < 8 and \
+                0 <= end_row < 8 and 0 <= end_col < 8:
+
                     mid_piece  = self.board.board[mid_row][mid_col]
                     end_square = self.board.board[end_row][end_col]
 
@@ -26,7 +33,12 @@ class Game:
                             and end_square == 0
                             and (end_row, end_col) not in visited):
                         moves.setdefault((end_row, end_col), []).append((mid_row, mid_col))
+
+                        # simulate capture
+                        self.board.board[mid_row][mid_col] = 0
                         explore_jumps(piece, end_row, end_col, visited | {(end_row, end_col)})
+                        # restore
+                        self.board.board[mid_row][mid_col] = mid_piece
 
         # Start by exploring jumps
         explore_jumps(piece, piece.row, piece.col, set())
@@ -107,35 +119,48 @@ class Game:
             piece.make_king()
 
     def remove_piece(self, row, col):
+        """Remove a piece from the board"""
         self.board.board[row][col] = 0
 
     def is_game_over(self):
-        """Check if the game is over"""
-        # Count pieces for both players
-        red_count, black_count = self.board.count_pieces()
-        
-        # Game is over if one player has no pieces
-        if red_count == 0 or black_count == 0:
-            return True
-            
-        # Game is over if current player has no valid moves
-        if not self.has_valid_moves(self.turn):
-            return True
-            
-        return False
+         """Check if the game is over (no pieces or no moves for *either* side)"""
+         red_count, black_count = self.board.count_pieces()
+         # if one side has no pieces, we’re done
+         if red_count == 0 or black_count == 0:
+             return True
+ 
+         # check moves for both players, regardless of whose turn it is
+         original = self.turn
+         # can red move?
+         self.turn = "r"
+         red_can = self.has_valid_moves("r")
+         # can black move?
+         self.turn = "b"
+         black_can = self.has_valid_moves("b")
+         # restore
+         self.turn = original
+ 
+         # game is over if either side has no moves
+         return not (red_can and black_can)
 
     def get_winner(self):
-        """Determine the winner of the game"""
-        red_count, black_count = self.board.count_pieces()
-        
-        if red_count == 0:
-            return "Black"
-        if black_count == 0:
-            return "Red"
-            
-        if not self.has_valid_moves("r"):
-            return "Black"
-        if not self.has_valid_moves("b"):
-            return "Red"
-            
-        return None
+         """Determine the winner of the game (by pieces or by no‐move for one side)"""
+         red_count, black_count = self.board.count_pieces()
+         if red_count == 0:
+             return "Black"
+         if black_count == 0:
+             return "Red"
+ 
+         # again, test each color’s mobility
+         original = self.turn
+         self.turn = "r"
+         red_can = self.has_valid_moves("r")
+         self.turn = "b"
+         black_can = self.has_valid_moves("b")
+         self.turn = original
+         if not red_can:
+             return "Black"
+         
+         if not black_can:
+             return "Red"
+         return None

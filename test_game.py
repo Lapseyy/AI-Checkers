@@ -1,6 +1,10 @@
 from game import Game
 from board import Piece
 
+'''Unit tests for the checkers game logic.
+   These tests cover basic moves, captures, 
+   king promotions, and game over conditions.'''
+
 def test_basic_move():
     game = Game()
 
@@ -60,7 +64,7 @@ def test_multiple_jump_paths():
     game.board.board[3][4] = Piece(3, 4, "b")  # right path
     game.board.board[5][6] = Piece(5, 6, "b")  # right path second jump
 
-    game.board.board[5][2] = Piece(5, 2, "b")  #
+    game.board.board[5][2] = Piece(5, 2, "b")  # right path second jump
 
     # First move from (2,3) to (4,1) OR (4,5) should be possible
     valid_moves = game.get_valid_moves(red_piece)
@@ -126,7 +130,9 @@ def test_turn_enforcement():
 
 def test_edge_of_board():
     game = Game()
-
+    #clear out all default pieces so we only have this one on the board
+    game.board.board = [[0 for _ in range(8)] for _ in range(8)]    
+    
     # Place a red piece near the edge
     piece = Piece(0, 1, "r")
     game.board.board[0][1] = piece
@@ -152,6 +158,7 @@ def test_game_over_no_moves():
     # Set up a scenario where black has no valid moves
     game.board.board = [[0 for _ in range(8)] for _ in range(8)]
     game.board.board[0][1] = Piece(0, 1, "r")
+    game.board.board[0][3] = Piece(0, 3, "r")
     game.board.board[1][2] = Piece(1, 2, "b")  # Black piece blocked by red
 
     assert game.is_game_over(), "Game should end when one player has no valid moves"
@@ -169,7 +176,7 @@ def test_multi_jump_mixed_directions():
 
     # Place black pieces for mixed-direction jumps
     game.board.board[3][2] = Piece(3, 2, "b")  # left path
-    game.board.board[5][4] = Piece(5, 4, "b")  # right path
+    game.board.board[5][2] = Piece(5, 2, "b")  # right path
 
     # First move from (2,3) to (4,1) should be possible
     valid_moves = game.get_valid_moves(red_piece)
