@@ -4,9 +4,11 @@ from game import Game
 
 def get_input():
     try:
-        from_row = input("Enter piece ROW (or 'q' to quit): ")
+        from_row = input("Enter piece ROW (or 'q' to quit, 's' to surrender): ")
         if from_row.lower() == 'q':
             return None
+        if from_row.lower() == 's':
+            return 'surrender'
         from_row = int(from_row)
         
         from_col = int(input("Enter piece COL: "))
@@ -16,7 +18,7 @@ def get_input():
     except:
         print("Invalid input format. Try again.")
         return get_input()
-
+    
 def main():
     game = Game()
     show_instructions()
@@ -30,6 +32,11 @@ def main():
             print("\nGame quit by player.")
             return
             
+        if move == 'surrender':
+            print(f"\n{'Red' if game.turn == 'r' else 'Black'} surrenders. "
+                  f"{'Black' if game.turn == 'r' else 'Red'} wins!")
+            return
+
         from_row, from_col, to_row, to_col = move
         piece = game.board.board[from_row][from_col]
 
@@ -47,9 +54,35 @@ def main():
             for j_row, j_col in jumped:
                 game.remove_piece(j_row, j_col)
 
+            # Check for additional jumps
+            while True:
+                valid_moves = game.get_valid_moves(piece)
+                additional_jumps = {move: jumps for move, jumps in valid_moves.items() if jumps}
+                if additional_jumps:
+                    print("\nAdditional jump available!")
+                    game.board.print_board()
+                    move = get_input()
+                    if move is None:
+                        print("\nGame quit by player.")
+                        return
+                    from_row, from_col, to_row, to_col = move
+                    if (to_row, to_col) in additional_jumps:
+                        game.move(piece, to_row, to_col)
+                        jumped = additional_jumps[(to_row, to_col)]
+                        for j_row, j_col in jumped:
+                            game.remove_piece(j_row, j_col)
+                    else:
+                        print("Invalid move. Try again.")
+                        continue
+                else:
+                    break
+
             game.switch_turn()
         else:
             print("Invalid move. Try again.")
+
+        if game.is_game_over():
+            break
 
     # Game is over, show winner
     winner = game.get_winner()
@@ -63,19 +96,13 @@ def show_instructions():
     print("Welcome to Competitive Checkers!")
     print("="*40)
     print("HOW TO PLAY:")
-    print("- Players take turns: Red ('r') goes first, then Black ('b')")
-    print("- Pieces move diagonally on dark squares")
+    print("- Players take turns: Red ('r') goes first, then Black ('b').")
+    print("- Pieces move diagonally.")
     print("- To move, enter coordinates as:")
     print("  → ROW and COLUMN of the piece to move")
     print("  → ROW and COLUMN of the destination square")
-    print("- Example:")
-    print("  Enter piece ROW: 2")
-    print("  Enter piece COL: 1")
-    print("  Enter DESTINATION ROW: 3")
-    print("  Enter DESTINATION COL: 0")
     print("- Captures and king promotions are automatic")
     print("- Kings are shown as uppercase (R or B)")
-    print("Press Ctrl+C to quit at any time.")
     print("="*40 + "\n")
 
 if __name__ == "__main__":
