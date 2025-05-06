@@ -150,7 +150,7 @@ class Game:
              return "Black"
          if black_count == 0:
              return "Red"
- 
+         
          # again, test each color’s mobility
          original = self.turn
          self.turn = "r"
@@ -164,3 +164,88 @@ class Game:
          if not black_can:
              return "Red"
          return None
+    def evaluate_board(self, color):
+        red_score = 0
+        black_score = 0
+        for row in self.board.board:
+            for piece in row:
+                if piece != 0:
+                    value = 1 + (0.5 if piece.king else 0)
+                if piece.color == "r":
+                    red_score += value
+                else:
+                    black_score += value
+
+        return (red_score - black_score) if color == "r" else (black_score - red_score)
+    
+def minimax(self, depth, alpha, beta, maximizing_player, color):
+    """Returns the best score for the current player (maximizing or minimizing)"""
+    # Base case: If the depth is 0 or game is over, return the evaluation of the board
+    if depth == 0 or self.is_game_over():
+        return self.evaluate_board(color)
+
+    # Maximizing for AI 
+    if maximizing_player:
+        max_eval = float('-inf')
+        for move in self.get_all_valid_moves(color):
+            self.make_move(move)
+            eval = self.minimax(depth - 1, alpha, beta, False, color)
+            self.undo_move(move)
+            max_eval = max(max_eval, eval)
+            alpha = max(alpha, eval)
+            if beta <= alpha:
+                break  
+
+        return max_eval
+
+    # Minimizing for opponent
+    else:
+        min_eval = float('inf')
+        opponent_color = "r" if color == "b" else "b"
+        for move in self.get_all_valid_moves(opponent_color):
+            self.make_move(move)
+            eval = self.minimax(depth - 1, alpha, beta, True, color)
+            self.undo_move(move)
+            min_eval = min(min_eval, eval)
+            beta = min(beta, eval)
+            if beta <= alpha:
+                break  
+
+        return min_eval
+    
+def ai_move(self):
+    """Make the AI move based on the minimax algorithm"""
+    best_move = None
+    max_eval = float('-inf')
+    for move in self.get_all_valid_moves(self.turn):
+        self.make_move(move)
+        eval = self.minimax(3, float('-inf'), float('inf'), False, self.turn)  
+        self.undo_move(move)
+        
+        if eval > max_eval:
+            max_eval = eval
+            best_move = move
+    
+    # Execute the best move
+    if best_move:
+        self.make_move(best_move)
+
+def make_move(self, move):
+    """Simulate making a move on the board"""
+    piece, row, col = move
+    self.move(piece, row, col)
+
+def undo_move(self, move):
+    """Undo a move (restores the board state)"""
+    piece, old_row, old_col, captured_positions = move
+    # Restore original position
+    self.board.board[old_row][old_col] = piece
+    self.board.board[piece.row][piece.col] = 0
+    piece.row = old_row
+    piece.col = old_col
+
+    # Restore captured pieces 
+    for captured in captured_positions:
+        self.board.board[captured[0]][captured[1]] = captured[2]  
+
+
