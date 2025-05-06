@@ -20,7 +20,8 @@ class CheckersUI:
         self.game_mode = None
         self.buttons = [[None for _ in range(8)] for _ in range(8)]
         self.selected_piece = None
-        self.ai = MinimaxAI("b")  # Initialize the AI with the black color
+        # Initialize the AI with the black color
+        self.ai = MinimaxAI("b")  
 
         self.start_menu()
 
@@ -84,7 +85,8 @@ class CheckersUI:
         valid_moves = self.game.get_valid_moves(piece)
         for move in valid_moves:
             r, c = move
-            self.buttons[r][c].config(bg="yellow")
+            # Highlight valid moves in red
+            self.buttons[r][c].config(bg="#FF0000")  
 
     def ai_move(self):
         """Handles the AI's move"""
