@@ -4,17 +4,18 @@ from game import Game
 from AI import MinimaxAI
 import random
 
+
 class CheckersUI:
     def __init__(self, root):
-        # This is 
+        # This is
         self.root = root
         self.root.title("Checkers Game")
         self.game = Game()
-        
+
         self.menu_frame = tk.Frame(self.root)
         self.board_frame = tk.Frame(self.root)
         # self.board_frame.pack()
-        
+
         # This allows PvP or AI
         self.game_mode = None
         self.buttons = [[None for _ in range(8)] for _ in range(8)]
@@ -22,20 +23,22 @@ class CheckersUI:
         self.ai = MinimaxAI("b")  # Initialize the AI with the black color
 
         self.start_menu()
-        
+
         # self.create_board()
         # self.update_board()
     def start_menu(self):
         '''This creates the start menu'''
         self.menu_frame.pack(fill=tk.BOTH, expand=True)
         self.menu_frame.pack()
-        tk.Label(self.menu_frame, text="Welcome to Competitive Checkers!", font=("Arial", 16)).pack(pady=10)
+        tk.Label(self.menu_frame, text="Welcome to Competitive Checkers!",
+                 font=("Arial", 16)).pack(pady=10)
         tk.Button(self.menu_frame, text="Player vs Player", width=20,
-                command=lambda: self.start_game("pvp")).pack(pady=5)
+                  command=lambda: self.start_game("pvp")).pack(pady=5)
         tk.Button(self.menu_frame, text="Player vs AI", width=20,
-                command=lambda: self.start_game("ai")).pack(pady=5)
-        tk.Button(self.menu_frame, text="Quit", width=20, command=self.root.quit).pack(pady=5)
-        
+                  command=lambda: self.start_game("ai")).pack(pady=5)
+        tk.Button(self.menu_frame, text="Quit", width=20,
+                  command=self.root.quit).pack(pady=5)
+
     def start_game(self, mode):
         '''This starts the game'''
         self.game_mode = mode
@@ -43,11 +46,12 @@ class CheckersUI:
         self.board_frame.pack()
         self.create_board()
         self.update_board()
-        
+
     def create_board(self):
         for row in range(8):
             for col in range(8):
-                color = "white" if (row + col) % 2 == 0 else "gray"
+                # Light and dark brown
+                color = "#F0D9B5" if (row + col) % 2 == 0 else "#B58863"
                 button = tk.Button(self.board_frame, bg=color, width=4, height=2,
                                    command=lambda r=row, c=col: self.on_square_click(r, c))
                 button.grid(row=row, column=col)
@@ -61,19 +65,17 @@ class CheckersUI:
                 if piece == 0:
                     self.buttons[row][col].config(text="", state=tk.NORMAL)
                 else:
+                    piece_color = "red" if piece.color == "r" else "black"  # Red for 'r', Black for 'b'
                     self.buttons[row][col].config(text=str(
-                        piece), state=tk.NORMAL if piece.color == self.game.turn else tk.DISABLED)
+                        piece), fg=piece_color, state=tk.NORMAL if piece.color == self.game.turn else tk.DISABLED)
         print("Board updated.")
 
     def clear_highlights(self):
-        # This is for the tile highlight 
-        # for row in range(8):
-        #     for col in range(8):
-        #         self.buttons[row][col].config(bg="white" if (row + col) % 2 == 0 else "red")
-        # Clear highlights on the board
+        # Clear highlights on the board and reset to original colors
         for row in range(8):
             for col in range(8):
-                color = "white" if (row + col) % 2 == 0 else "gray"
+                # Light and dark brown
+                color = "#F0D9B5" if (row + col) % 2 == 0 else "#B58863"
                 self.buttons[row][col].config(bg=color)
 
     def highlight_moves(self, row, col):
@@ -89,19 +91,37 @@ class CheckersUI:
 
         # 1) Ask the AI for its best move
         move = self.ai.choose_move(self.game)
+        print(f"AI chose move: {move}")
+        print(move)
         if move is None:
-            messagebox.showinfo("Game Over", "AI has no valid moves. Player wins!")
+            messagebox.showinfo(
+                "Game Over", "AI has no valid moves. Player wins!")
             self.root.quit()
             return
 
         # 2) Unpack what the AI returned
         orig_piece, (to_row, to_col), _ = move
 
+        print(f"AI move: {orig_piece} to ({to_row}, {to_col})")
+
+        print(orig_piece)
+
         # 3) Locate the live Piece on the real board
         from_row, from_col = orig_piece.row, orig_piece.col
+
+        print(f"Moving from ({from_row}, {from_col}) to ({to_row}, {to_col})")
         real_piece = self.game.board.board[from_row][from_col]
 
+        # Validate the AI's move
+        if not isinstance(real_piece, self.game.board.board[from_row][from_col].__class__):
+            print("AI attempted to move an invalid piece.")
+            messagebox.showinfo(
+                "Error", "AI made an invalid move. Ending game.")
+            self.root.quit()
+            return
+
         # 4) Perform the move via the Game API
+        print(f"Moving piece: {real_piece} to ({to_row}, {to_col})")
         self.game.move(real_piece, to_row, to_col)
 
         # 5) Switch back to the human player …
