@@ -1,6 +1,7 @@
 # This marks the begenining of checkers AI
 
 from game import Game
+from AI import MinimaxAI
 
 def get_input():
     '''Get input from the player for their move.'''
@@ -89,6 +90,26 @@ def main():
             game.switch_turn()
         else:
             print("Invalid move. Try again.")
+
+        if game.turn == 'b':  # Assuming 'b' is the AI's color
+            print("AI is making its move...")
+            ai = MinimaxAI('b')  # Initialize the AI with the black color
+            ai_move = ai.choose_move(game)  # Use the AI to choose the best move
+
+            if ai_move is not None:
+                piece, (to_row, to_col), captured = ai_move
+                game.move(piece, to_row, to_col)  # Apply the move
+
+                # Handle captures
+                for j_row, j_col in captured:
+                    game.remove_piece(j_row, j_col)
+
+                game.switch_turn()  # Switch turn back to the player
+            else:
+                print("AI has no valid moves. Player wins!")
+                break
+
+            continue
 
         if game.is_game_over():
             break

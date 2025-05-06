@@ -8,7 +8,9 @@ class Game:
         self.turn = "r"  # "r" = Red starts first
 
     def switch_turn(self):
+        print(f"Switching turn. Current turn: {self.turn}")
         self.turn = "b" if self.turn == "r" else "r"
+        print(f"Turn switched. New turn: {self.turn}")
 
     def get_valid_moves(self, piece):
         # Ensures moves are only generated for the current player's pieces

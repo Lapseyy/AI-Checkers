@@ -69,6 +69,44 @@ class Board:
                         black += 1
         return red, black
 
+    def get_all_moves(self, color):
+        """Generate all valid moves for the given color."""
+        moves = []
+        for piece in self.get_all_pieces(color):
+            for dr, dc in [(-1, -1), (-1, 1), (1, -1), (1, 1)]:
+                row, col = piece.row + dr, piece.col + dc
+                if 0 <= row < 8 and 0 <= col < 8 and self.board[row][col] == 0:
+                    if piece.king or (piece.color == "r" and dr > 0) or (piece.color == "b" and dr < 0):
+                        moves.append((piece, (row, col), []))
+
+                # Check for capture moves
+                jump_row, jump_col = piece.row + 2 * dr, piece.col + 2 * dc
+                mid_row, mid_col = piece.row + dr, piece.col + dc
+                if (
+                    0 <= jump_row < 8 and 0 <= jump_col < 8
+                    and self.board[jump_row][jump_col] == 0
+                    and self.board[mid_row][mid_col] != 0
+                    and self.board[mid_row][mid_col].color != piece.color
+                ):
+                    moves.append((piece, (jump_row, jump_col), [(mid_row, mid_col)]))
+
+        return moves
+
+    def make_move(self, move):
+        """Simulate a move on the board.
+        Args:
+            move (tuple): A tuple containing the piece, destination, and any captured pieces.
+        """
+        piece, (row, col), captured = move
+
+        # Move the piece to the new position
+        self.board[piece.row][piece.col] = 0
+        piece.row, piece.col = row, col
+        self.board[row][col] = piece
+
+        # Remove any captured pieces
+        for r, c in captured:
+            self.board[r][c] = 0
+
     def __getitem__(self, index):
         return self.board[index]  # Allow subscripting to access the internal board
-    
