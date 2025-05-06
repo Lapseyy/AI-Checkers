@@ -7,8 +7,9 @@ class Game:
     def __init__(self):
         self.board = Board()
         self.turn = "r"  # "r" = Red starts first
+        # International Checkers rules state that jumps are mandatory
         self.mandatory_jumps = True  # Force players to take jumps when available
-
+        # self.mandatory_jumps = False  # Allow players to choose between jumps and regular moves
     def switch_turn(self):
         """Switch the current player's turn."""
         self.turn = "b" if self.turn == "r" else "r"
