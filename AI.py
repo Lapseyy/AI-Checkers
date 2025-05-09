@@ -6,7 +6,7 @@ from board import Piece
 
 
 class MinimaxAI:
-    def __init__(self, color, max_depth=3):  # Reduced default depth for better performance
+    def __init__(self, color, max_depth=1):  # Reduced default depth for better performance
         self.color = color
         self.max_depth = max_depth
 
