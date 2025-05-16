@@ -11,7 +11,7 @@ def get_input():
             return None
         if entry == 's':
             return 'surrender'
-        # try to parse from_row
+        
         try:
             from_row = int(entry)
             from_col = int(input("Enter piece COL (0–7): ").strip())
@@ -90,11 +90,14 @@ def main():
             game.switch_turn()
         else:
             print("Invalid move. Try again.")
-
-        if game.turn == 'b':  # Assuming 'b' is the AI's color
+            
+        # AI's turn
+        if game.turn == 'b':  
             print("AI is making its move...")
-            ai = MinimaxAI('b')  # Initialize the AI with the black color
-            ai_move = ai.choose_move(game)  # Use the AI to choose the best move
+            # Initialize the AI with the black color
+            ai = MinimaxAI('b')
+            # Use the AI to choose the best move
+            ai_move = ai.choose_move(game)
 
             if ai_move is not None:
                 piece, (to_row, to_col), captured = ai_move
@@ -103,8 +106,9 @@ def main():
                 # Handle captures
                 for j_row, j_col in captured:
                     game.remove_piece(j_row, j_col)
-
-                game.switch_turn()  # Switch turn back to the player
+                    
+                # Switch turn back to the player
+                game.switch_turn()  
             else:
                 print("AI has no valid moves. Player wins!")
                 break

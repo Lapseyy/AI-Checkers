@@ -24,7 +24,8 @@ class CheckersUI:
         self.game_mode = None
         self.buttons = [[None for _ in range(8)] for _ in range(8)]
         self.selected_piece = None
-        self.valid_moves = {}  # Store valid moves for the selected piece
+        # Store valid moves for the selected piece
+        self.valid_moves = {}
         # Initialize the AI with the black color
         self.ai = MinimaxAI("b")  
 
@@ -89,17 +90,19 @@ class CheckersUI:
                 
                 # Check if this is the selected piece
                 if self.selected_piece and (row, col) == self.selected_piece:
-                    color = self.selected_color  # Highlight selected piece
+                    # Highlight selected piece
+                    color = self.selected_color  
                 
                 # Check if this is a valid move square
                 elif self.valid_moves and (row, col) in self.valid_moves:
-                    color = self.highlight_color  # Highlight valid move
+                    #  Highlight valid moves
+                    color = self.highlight_color
                 
                 if piece == 0:
                     self.buttons[row][col].config(text="", bg=color, state=tk.NORMAL)
                 else:
-                    piece_color = "red" if piece.color == "r" else "black"  # Red for 'r', Black for 'b'
-                    # Use original notation: r/b for regular, R/B for kings
+                    # Red for 'r', Black for 'b'
+                    piece_color = "red" if piece.color == "r" else "black"  
                     piece_text = str(piece)
                     self.buttons[row][col].config(
                         text=piece_text, 

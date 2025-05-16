@@ -1,14 +1,15 @@
-# This file contains the Game class, which manages the game state and logic.
-
 from board import Board, Piece
 
-
+# This file contains the Game class, which manages the game state and logic.
+# It handles player turns, valid moves, captures, and game over conditions.
 class Game:
     def __init__(self):
+        """Initialize the game with a new board and set the starting player."""
         self.board = Board()
-        self.turn = "r"  # "r" = Red starts first
+        self.turn = "r"
         # International Checkers rules state that jumps are mandatory
-        self.mandatory_jumps = True  # Force players to take jumps when available
+        # Force players to take jumps when available
+        self.mandatory_jumps = True 
         # self.mandatory_jumps = False  # Allow players to choose between jumps and regular moves
     def switch_turn(self):
         """Switch the current player's turn."""
@@ -60,7 +61,15 @@ class Game:
             return [(-1, -1), (-1, 1)]
 
     def _find_jumps(self, piece, row, col, captured, moves, visited):
-        """Recursively find all jump moves for a piece."""
+        """Recursively find all jump moves for a piece. 
+        Args:
+            piece (Piece): The piece to find jumps for.
+            row (int): The current row of the piece.
+            col (int): The current column of the piece.
+            captured (list): List of captured pieces during this jump sequence.
+            moves (dict): Dictionary to store valid jump moves.
+            visited (set): Set of visited positions to avoid cycles.
+        """
         # After the first jump, any piece can move in any direction
         directions = self._get_directions(piece) if not captured else [
             (-1, -1), (-1, 1), (1, -1), (1, 1)]
@@ -175,5 +184,5 @@ class Game:
             return "Black"
         if not black_can_move:
             return "Red"
-
-        return None  # No winner yet
+        
+        return None

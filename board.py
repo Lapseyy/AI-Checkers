@@ -105,7 +105,16 @@ class Board:
             return [(-1, -1), (-1, 1)]
 
     def _check_jumps(self, piece, row, col, captured, moves, visited):
-        """Recursively check for jump moves."""
+        """ Recursively check for valid jump moves.
+        Args:
+            piece (Piece): The piece to check for jumps.
+            row (int): Current row of the piece.
+            col (int): Current column of the piece.
+            captured (list): List of captured pieces in this jump sequence.
+            moves (list): List to store valid moves.
+            visited (set): Set of visited positions to avoid cycles.
+        """
+        
         # Kings can jump in any direction
         # Regular pieces can only jump in their forward direction initially
         # After first jump, all pieces can jump in any direction

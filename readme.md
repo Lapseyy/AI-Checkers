@@ -1,6 +1,6 @@
 # Checkers AI Game
 
-This project is a Checkers game with an optional AI opponent. The game progresses through multiple phases, starting with core game logic and culminating in a graphical user interface (GUI) if time permits.
+This project is a Checkers game with an optional AI opponent. The game progresses through multiple phases, starting with core game logic and culminating in a graphical user interface (GUI).
 
 
 ## 📁 File Overview
@@ -18,7 +18,7 @@ This project is a Checkers game with an optional AI opponent. The game progresse
 - Legal move enforcement and turn-based play
 - Capture and king promotion rules
 - Win condition detection
-- AI opponent via Minimax (coming soon!)
+- AI opponent via Minimax and alpha-beta pruning
 - Modular design for easy extension and testing
 
 ---
@@ -28,6 +28,11 @@ This project is a Checkers game with an optional AI opponent. The game progresse
 - Developed as a final AI course project
 - Initial AI algorithms provided by course (`search.py`)
 - Goal is functional, interactive play — GUI optional
+- Some features may not be available on Mac and Windows
+- On windows current issue of not seeing available paths
+- On Mac not being able to see opponent moves
+
+
 
 ---
 ## Running checkers

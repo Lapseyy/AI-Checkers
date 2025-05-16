@@ -1,7 +1,7 @@
 from game import Game
 from board import Piece
 
-'''Unit tests for the checkers game logic.
+'''An attempt at unit tests for the checkers game logic.
    These tests cover basic moves, captures, 
    king promotions, and game over conditions.'''
 

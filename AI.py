@@ -173,9 +173,10 @@ class MinimaxAI:
     def evaluate(self, state):
         """Evaluate the board position for the AI player."""
         # Count material
+        # Kings are worth more than regular pieces
         material_value = 0
         position_value = 0
-        king_value = 1.5  # Kings are worth more
+        king_value = 1.5  
 
         for row in range(8):
             for col in range(8):
